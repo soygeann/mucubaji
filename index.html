@@ -203,7 +203,8 @@
 <body>
 
     <div class="form-container">
-        <h2 style="margin-top: 0; font-size: 18px; color: var(--primary-color);">Generador de Recibo de Condominio</h2>
+        <img src="logo.png" alt="Logo" style="width: 100px; height: auto; margin-bottom: 10px;">
+        <h2 style="margin-top: 0; font-size: 18px; color: #2e7d32;">Generador de Recibo de Condominio</h2>
         
         <div class="form-group">
             <label for="input-fecha">Fecha:</label>
@@ -302,12 +303,11 @@
     </div>
 
     <div class="actions" id="actions-section" style="display: none;">
-        <button class="btn" onclick="descargarComoImagen()">📥 Guardar Recibo como Imagen</button>
-        <button class="btn" onclick="descargarComoPDF()" style="background-color: #1976d2;">📄 Generar PDF (Alternativo)</button>
+        <button class="btn" onclick="descargarPDF()">📥 Descargar en PDF</button>
+        <button class="btn" onclick="descargarComoImagen()" style="background-color: #1976d2;">📷 Guardar como Imagen (JPG)</button>
     </div>
 
     <script>
-        // Establecer fecha por defecto al día actual
         document.getElementById('input-fecha').valueAsDate = new Date();
 
         function generarFactura() {
@@ -348,42 +348,47 @@
             document.getElementById('out-referencia').innerText = refVal;
 
             document.getElementById('receipt-section').style.display = 'block';
-            document.getElementById('actions-section').style.display = 'block';
+            document.getElementById('actions-section').style.display = 'flex';
+        }
+
+        function descargarPDF() {
+            const element = document.getElementById('receipt-section');
+            const opt = {
+                margin:       10,
+                filename:     'Recibo_Conjunto_Mucubaji.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            // Intentamos generar y forzar la descarga de forma nativa en navegadores móviles.
+            html2pdf().set(opt).from(element).save().catch(err => {
+                alert("No se pudo descargar automáticamente. Generando en una ventana emergente para que pueda guardarlo.");
+                generarEnVentana();
+            });
         }
 
         function descargarComoImagen() {
-            // Utilizamos una ventana nueva con la versión del recibo dibujada para que el teléfono la guarde como imagen
+            generarEnVentana();
+        }
+
+        function generarEnVentana() {
             const element = document.getElementById('receipt-section');
-            
-            // Opciones para asegurar una buena resolución de imagen
             const opt = {
                 margin:       5,
-                filename:     'Recibo_Mucubaji.jpg',
+                filename:     'Recibo_Conjunto_Mucubaji.jpg',
                 image:        { type: 'jpeg', quality: 1.0 },
                 html2canvas:  { scale: 2 },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            // Crea la imagen directamente para que el navegador del móvil permita descargarla
             html2pdf().set(opt).from(element).to('img').get('img').then((img) => {
                 let win = window.open();
-                win.document.write('<img src="' + img.src + '" style="width:100%;"/>');
-                win.document.title = "Recibo_Mucubaji";
-                alert("Mantén presionada la imagen para descargarla o compartirla.");
+                win.document.write('<div style="text-align:center;"><img src="' + img.src + '" style="width:95%; max-width:650px; margin-top:20px;"/><br><p style="font-family:sans-serif;"><b>Mantén presionada la imagen para descargarla [Guardar imagen].</b></p></div>');
+                win.document.title = "Recibo_Conjunto_Mucubaji";
+            }).catch(err => {
+                alert("Ocurrió un error al generar la imagen. Intente nuevamente.");
             });
-        }
-
-        function descargarComoPDF() {
-            const element = document.getElementById('receipt-section');
-            const opt = {
-                margin:       10,
-                filename:     'Recibo_Mucubaji.pdf',
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2 },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-            
-            html2pdf().set(opt).from(element).save();
         }
     </script>
 </body>
