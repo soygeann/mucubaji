@@ -45,7 +45,7 @@
             font-size: 13px;
         }
 
-        .form-group input, .form-group select {
+        .form-group input {
             width: 100%;
             padding: 8px;
             border: 1px solid #ccc;
@@ -77,7 +77,8 @@
             padding: 20px;
             border: 2px solid var(--border-color);
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            display: none; /* Se muestra al generar */
+            display: none;
+            margin-top: 10px;
         }
 
         .header {
@@ -175,16 +176,22 @@
         .actions {
             margin-top: 20px;
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
         .btn {
             background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 20px;
             font-size: 14px;
             cursor: pointer;
             border-radius: 4px;
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
             transition: background 0.3s;
         }
 
@@ -295,11 +302,12 @@
     </div>
 
     <div class="actions" id="actions-section" style="display: none;">
-        <button class="btn" onclick="descargarPDF()">📥 Descargar PDF</button>
+        <button class="btn" onclick="descargarComoImagen()">📥 Guardar Recibo como Imagen</button>
+        <button class="btn" onclick="descargarComoPDF()" style="background-color: #1976d2;">📄 Generar PDF (Alternativo)</button>
     </div>
 
     <script>
-        // Establecer fecha por defecto con el día de hoy
+        // Establecer fecha por defecto al día actual
         document.getElementById('input-fecha').valueAsDate = new Date();
 
         function generarFactura() {
@@ -311,9 +319,8 @@
             const tipoPagoVal = document.getElementById('input-tipo-pago').value;
             const refVal = document.getElementById('input-referencia').value;
 
-            // Validación simple
-            if (!nombreVal || !montoVal) {
-                alert("Por favor, completa al menos el nombre y el monto.");
+            if (!nombreVal || isNaN(montoVal)) {
+                alert("Por favor, complete al menos el nombre y el monto.");
                 return;
             }
 
@@ -344,17 +351,38 @@
             document.getElementById('actions-section').style.display = 'block';
         }
 
-        function descargarPDF() {
+        function descargarComoImagen() {
+            // Utilizamos una ventana nueva con la versión del recibo dibujada para que el teléfono la guarde como imagen
             const element = document.getElementById('receipt-section');
+            
+            // Opciones para asegurar una buena resolución de imagen
             const opt = {
-                margin:       10,
-                filename:     'Recibo_Condominio.pdf',
-                image:        { type: 'jpeg', quality: 0.98 },
+                margin:       5,
+                filename:     'Recibo_Mucubaji.jpg',
+                image:        { type: 'jpeg', quality: 1.0 },
                 html2canvas:  { scale: 2 },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            // Genera y descarga el PDF en el teléfono usando html2pdf
+            // Crea la imagen directamente para que el navegador del móvil permita descargarla
+            html2pdf().set(opt).from(element).to('img').get('img').then((img) => {
+                let win = window.open();
+                win.document.write('<img src="' + img.src + '" style="width:100%;"/>');
+                win.document.title = "Recibo_Mucubaji";
+                alert("Mantén presionada la imagen para descargarla o compartirla.");
+            });
+        }
+
+        function descargarComoPDF() {
+            const element = document.getElementById('receipt-section');
+            const opt = {
+                margin:       10,
+                filename:     'Recibo_Mucubaji.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
             html2pdf().set(opt).from(element).save();
         }
     </script>
