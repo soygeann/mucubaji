@@ -3,394 +3,331 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recibo de Condominio - Conjunto II Mucubají</title>
+    <title>Gestión Personal - Humberto Rincón</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
     <style>
         :root {
             --primary-color: #2e7d32;
-            --secondary-color: #e8f5e9;
+            --bg-dark: #000000;
+            --text-light: #ffffff;
             --border-color: #333;
-            --text-color: #000;
         }
 
-        body {
-            font-family: Arial, sans-serif;
+        body, html {
             margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            overflow-x: hidden;
+        }
+
+        /* --- VISTA DE INICIO (FRONT) --- */
+        #home-view {
             display: flex;
             flex-direction: column;
-            align-items: center;
+            min-height: 100vh;
         }
 
-        .form-container {
-            width: 100%;
-            max-width: 650px;
-            background: #fff;
-            padding: 20px;
-            border: 2px solid var(--border-color);
-            margin-bottom: 20px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            font-size: 13px;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 13px;
-        }
-
-        .btn-generate {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            font-size: 14px;
-            cursor: pointer;
-            border-radius: 4px;
-            width: 100%;
-            transition: background 0.3s;
-        }
-
-        .btn-generate:hover {
-            background-color: #1b5e20;
-        }
-
-        .receipt-container {
-            width: 100%;
-            max-width: 650px;
-            background: #fff;
-            padding: 20px;
-            border: 2px solid var(--border-color);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            margin-top: 10px;
-            /* Se mantiene visible o se ajusta en el script para renderizar bien */
-        }
-
-        .header {
+        .hero-section {
+            position: relative;
+            height: 60vh;
+            background: url('humberto.jpg') no-repeat center center; /* Reemplaza con tu foto */
+            background-size: cover;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            justify-content: flex-end;
             align-items: center;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-        }
-
-        .logo-area {
-            width: 80px;
-            height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             text-align: center;
         }
 
-        .logo-area img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
+        /* Degradado blanco para los textos */
+        .hero-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0) 20%, rgba(255,255,255,1) 95%);
+            z-index: 1;
         }
 
-        .title-area {
-            text-align: right;
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            padding-bottom: 20px;
+            color: #000;
         }
 
-        .title-area h1 {
+        .hero-content h1 {
+            margin: 0;
+            font-size: 30px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 900;
+        }
+
+        .hero-content p {
+            margin: 5px 0 30px;
+            font-size: 24px;
+            font-weight: 300;
+        }
+
+        /* Sección de Cuadros (Fondo Negro) */
+        .management-section {
+            background-color: var(--bg-dark);
+            padding: 30px 20px;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            border-top-left-radius: 40px;
+            border-top-right-radius: 40px;
+            margin-top: -30px;
+            z-index: 3;
+            position: relative;
+        }
+
+        .card {
+            width: 160px;
+            height: 200px;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            /* border: 1px solid #333; */
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 20%, rgba(0, 0, 0, 1) 95%);
+        }
+
+        .card:active {
+            transform: scale(0.95);
+        }
+
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.9;
+        }
+
+        .card-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 17px 0px;
+            background: rgba(0,0,0,0.6);
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 20%, rgba(0, 0, 0, 1) 120%);
+            text-align: center;
             font-size: 16px;
-            margin: 0 0 5px 0;
+            font-weight: bold;
             text-transform: uppercase;
         }
 
-        .title-area p {
-            margin: 0;
-            font-size: 13px;
+        /* --- VISTA DE GESTIÓN DE RECIBOS (FORMULARIO) --- */
+        #receipt-view {
+            display: none;
+            padding: 20px;
+            background-color: #f4f4f4;
+            color: #000;
+            min-height: 100vh;
         }
 
-        .info-grid {
-            display: grid;
-            grid-template-columns: 3fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
-            font-size: 13px;
-        }
-
-        .info-box {
-            border: 1px solid var(--border-color);
-            padding: 8px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 15px;
-            font-size: 13px;
-        }
-
-        th, td {
-            border: 1px solid var(--border-color);
-            padding: 10px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f9f9f9;
-        }
-
-        .text-right {
-            text-align: right;
-        }
-
-        .watermark-box {
+        .header-app {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            margin-bottom: 20px;
+            gap: 15px;
         }
 
-        .stamp img {
-            max-width: 120px;
-            max-height: 50px;
-            object-fit: contain;
-        }
-
-        .footer-text {
-            text-align: center;
-            font-size: 12px;
-            margin-top: 15px;
-            font-style: italic;
-        }
-
-        .actions {
-            margin-top: 20px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .btn {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            font-size: 14px;
+        .back-btn {
+            background: #fff;
+            border: 1px solid #ccc;
+            padding: 10px 12px;
+            border-radius: 100%;
             cursor: pointer;
-            border-radius: 4px;
-            width: 100%;
-            max-width: 300px;
-            margin: 0 auto;
-            transition: background 0.3s;
+            font-size: 18px;
         }
 
-        .btn:hover {
-            background-color: #1b5e20;
+        .form-container {
+            /* width: 100%; */
+            max-width: 600px;
+            background: #fff;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            margin: 0 auto 20px;
         }
+
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; margin-bottom: 4px; font-weight: bold; font-size: 12px; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+
+        .btn-main {
+            background-color: var(--primary-color);
+            color: white; border: none; padding: 12px;
+            font-size: 14px; border-radius: 6px; width: 100%; cursor: pointer;
+        }
+
+        /* El Recibo (Igual al anterior pero adaptado) */
+        .receipt-container {
+            background: #fff; padding: 15px; border: 2px solid #333; margin-top: 15px; /* width: 100%; */ max-width: 600px; margin: 20px auto;
+        }
+        /* ... Estilos internos del recibo heredados del anterior ... */
+        .r-header { display: flex; justify-content: space-between; border-bottom: 2px solid #333; padding-bottom: 5px; margin-bottom: 10px; }
+        .actions { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; align-items: center; }
+        .btn-action { padding: 10px 20px; border-radius: 5px; border: none; color: white; width: 100%; max-width: 300px; cursor: pointer; }
+
     </style>
 </head>
 <body>
 
-    <div class="form-container">
-        <h2 style="margin-top: 0; font-size: 18px; color: #2e7d32;">Generador de Recibo de Condominio</h2>
-        
-        <div class="form-group">
-            <label for="input-fecha">Fecha:</label>
-            <input type="date" id="input-fecha">
-        </div>
-
-        <div class="form-group">
-            <label for="input-nombre">Nombre y Apellido:</label>
-            <input type="text" id="input-nombre" placeholder="Ej. Alba">
-        </div>
-
-        <div class="form-group">
-            <label for="input-casa">Casa:</label>
-            <input type="text" id="input-casa" placeholder="Ej. # 2 -32">
-        </div>
-
-        <div class="form-group">
-            <label for="input-mes">Mes a cancelar:</label>
-            <input type="text" id="input-mes" placeholder="Ej. Mes de Marzo">
-        </div>
-
-        <div class="form-group">
-            <label for="input-monto">Monto:</label>
-            <input type="number" step="0.01" id="input-monto" placeholder="Ej. 7130.78">
-        </div>
-
-        <div class="form-group">
-            <label for="input-tipo-pago">Tipo de Pago:</label>
-            <input type="text" id="input-tipo-pago" placeholder="Ej. Pago Movil Venezuela">
-        </div>
-
-        <div class="form-group">
-            <label for="input-referencia">Referencia:</label>
-            <input type="text" id="input-referencia" placeholder="Ej. 005243929017">
-        </div>
-
-        <button class="btn-generate" onclick="generarFactura()">Generar Factura</button>
-    </div>
-
-    <div class="receipt-container" id="receipt-section" style="display: none;">
-        <div class="header">
-            <div class="logo-area">
-                <img src="logo.png" alt="Logo">
-            </div>
-            <div class="title-area">
-                <h1>Asociación Civil Conjunto II Mucubají</h1>
-                <p><strong>RIF:</strong> J-400991839</p>
-                <p><strong>Fecha:</strong> <span id="out-fecha">3/1/2026</span></p>
+    <div id="home-view">
+        <div class="hero-section">
+            <!-- <div style="position: absolute; top: 20px; right: 20px; background: white; color: black; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; z-index: 10;">
+                🏠
+            </div> -->
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <h1>Humberto Rincón</h1>
+                <p>Gestión personal</p>
             </div>
         </div>
 
-        <div class="info-grid">
-            <div class="info-box">
-                <strong>Nombre y Apellido:</strong> <span id="out-nombre">Alba</span>
+        <div class="management-section">
+            <div class="card" onclick="showView('receipt-view')">
+                <img src="mucubaji_bg.jpg" alt="Conjunto Mucubají">
+                <div class="card-title">Conjunto Mucubají</div>
             </div>
-            <div class="info-box" style="text-align: center;">
-                <strong>Casa</strong><br><span id="out-casa"># 2 -32</span>
+
+            <div class="card" onclick="alert('Módulo en desarrollo...')">
+                <img src="cosmeticos_bg.jpg" alt="Cosméticos">
+                <div class="card-title">Cosméticos Mariangel</div>
             </div>
-        </div>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>DESCRIPCIÓN</th>
-                    <th class="text-right">MONTO</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <div class="watermark-box">
-                            <span id="out-mes">Mes de Marzo</span>
-                            <div class="stamp">
-                                <img src="sello.png" alt="Sello Pagado">
-                            </div>
-                        </div>
-                    </td>
-                    <td class="text-right" id="out-monto">7,130.78</td>
-                </tr>
-                <tr>
-                    <td><strong>Tipo de Pago:</strong> <span id="out-tipo-pago">Pago Movil Venezuela</span></td>
-                    <td rowspan="2" class="text-right" style="vertical-align: bottom;">
-                        <strong>TOTAL</strong><br>
-                        <span style="font-size: 16px; font-weight: bold;" id="out-total">7,130.78</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>REFERENCIA:</strong> <span id="out-referencia">005243929017</span></td>
-                </tr>
-            </tbody>
-        </table>
-
-        <div class="footer-text">
-            Gracias por realizar el pago a su condominio.
         </div>
     </div>
 
-    <div class="actions" id="actions-section" style="display: none;">
-        <button class="btn" onclick="descargarPDF()">📥 Descargar en PDF</button>
-        <button class="btn" onclick="descargarComoImagen()" style="background-color: #1976d2;">📷 Guardar como Imagen</button>
+    <div id="receipt-view">
+        <div class="header-app">
+            <button class="back-btn" onclick="showView('home-view')">←</button>
+            <h2 style="margin:0; font-size: 18px;">Gestión de Recibos</h2>
+        </div>
+
+        <div class="form-container">
+            <div class="form-group">
+                <label>Fecha:</label>
+                <input type="date" id="input-fecha">
+            </div>
+            <div class="form-group">
+                <label>Nombre y Apellido:</label>
+                <input type="text" id="input-nombre" placeholder="Ej. Alba">
+            </div>
+            <div class="form-group">
+                <label>Casa:</label>
+                <input type="text" id="input-casa" placeholder="Ej. # 2 -32">
+            </div>
+            <div class="form-group">
+                <label>Mes a cancelar:</label>
+                <input type="text" id="input-mes" placeholder="Ej. Mes de Marzo">
+            </div>
+            <div class="form-group">
+                <label>Monto:</label>
+                <input type="number" step="0.01" id="input-monto">
+            </div>
+            <div class="form-group">
+                <label>Tipo de Pago:</label>
+                <input type="text" id="input-tipo-pago" placeholder="Ej. Pago Movil">
+            </div>
+            <div class="form-group">
+                <label>Referencia:</label>
+                <input type="text" id="input-referencia">
+            </div>
+            <button class="btn-main" onclick="generarFactura()">Generar Factura</button>
+        </div>
+
+        <div id="receipt-section" class="receipt-container" style="display: none; color: black;">
+            <div class="r-header">
+                <div><img src="logo.png" width="60" id="r-logo"></div>
+                <div style="text-align: right;">
+                    <div style="font-size: 12px; font-weight: bold;">ASOCIACIÓN CIVIL CONJUNTO II MUCUBAJI</div>
+                    <div style="font-size: 10px;">RIF: J-400991839</div>
+                    <div style="font-size: 11px;">Fecha: <span id="out-fecha"></span></div>
+                </div>
+            </div>
+            <div style="font-size: 12px; margin-bottom: 10px; border: 1px solid #333; padding: 5px;">
+                Nombre y Apellido: <b id="out-nombre"></b>
+            </div>
+            <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+                <tr>
+                    <th style="border: 1px solid #333; padding: 5px;">Casa</th>
+                    <th style="border: 1px solid #333; padding: 5px;">Descripción</th>
+                    <th style="border: 1px solid #333; padding: 5px;">Monto</th>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #333; padding: 5px; text-align: center;" id="out-casa"></td>
+                    <td style="border: 1px solid #333; padding: 5px; position: relative;">
+                        <span id="out-mes"></span>
+                        <img src="sello.png" style="position: absolute; right: 5px; top: 0; width: 60px; opacity: 0.8;">
+                    </td>
+                    <td style="border: 1px solid #333; padding: 5px; text-align: right;" id="out-monto"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="border: 1px solid #333; padding: 5px;">
+                        Pago: <span id="out-tipo-pago"></span><br>Ref: <span id="out-referencia"></span>
+                    </td>
+                    <td style="border: 1px solid #333; padding: 5px; text-align: right; font-weight: bold;">
+                        TOTAL: <span id="out-total"></span>
+                    </td>
+                </tr>
+            </table>
+            <div style="font-size: 9px; text-align: center; margin-top: 10px;">Gracias por realizar el pago a su condominio</div>
+        </div>
+
+        <div class="actions" id="actions-section" style="display: none;">
+            <button class="btn-action" onclick="descargarPDF()" style="background: #2e7d32;">Descargar PDF</button>
+            <button class="btn-action" onclick="window.scrollTo(0,0); alert('Toma la captura ahora')" style="background: #1976d2;">Listo para Captura</button>
+        </div>
     </div>
 
     <script>
+        // Lógica de navegación
+        function showView(viewId) {
+            document.getElementById('home-view').style.display = 'none';
+            document.getElementById('receipt-view').style.display = 'none';
+            document.getElementById(viewId).style.display = 'block';
+            window.scrollTo(0,0);
+        }
+
+        // Lógica del Recibo
         document.getElementById('input-fecha').valueAsDate = new Date();
 
         function generarFactura() {
-            const fechaVal = document.getElementById('input-fecha').value;
-            const nombreVal = document.getElementById('input-nombre').value;
-            const casaVal = document.getElementById('input-casa').value;
-            const mesVal = document.getElementById('input-mes').value;
-            const montoVal = parseFloat(document.getElementById('input-monto').value);
-            const tipoPagoVal = document.getElementById('input-tipo-pago').value;
-            const refVal = document.getElementById('input-referencia').value;
-
-            if (!nombreVal || isNaN(montoVal)) {
-                alert("Por favor, complete al menos el nombre y el monto.");
-                return;
-            }
-
-            let fechaTexto = 'Fecha';
-            if (fechaVal) {
-                const partes = fechaVal.split('-');
-                if (partes.length === 3) {
-                    fechaTexto = `${partes[1]}/${partes[2]}/${partes[0]}`;
-                } else {
-                    fechaTexto = fechaVal;
-                }
-            }
-
-            document.getElementById('out-fecha').innerText = fechaTexto;
-            document.getElementById('out-nombre').innerText = nombreVal;
-            document.getElementById('out-casa').innerText = casaVal;
-            document.getElementById('out-mes').innerText = mesVal;
+            const campos = ['fecha', 'nombre', 'casa', 'mes', 'monto', 'tipo-pago', 'referencia'];
+            campos.forEach(c => {
+                let val = document.getElementById('input-' + c).value;
+                if(c === 'monto') val = parseFloat(val).toLocaleString('es-ES', {minimumFractionDigits: 2});
+                document.getElementById('out-' + c).innerText = val;
+            });
+            document.getElementById('out-total').innerText = document.getElementById('out-monto').innerText;
             
-            const opcionesMonto = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
-            const montoStr = isNaN(montoVal) ? '0.00' : montoVal.toLocaleString('es-ES', opcionesMonto);
-            
-            document.getElementById('out-monto').innerText = montoStr;
-            document.getElementById('out-total').innerText = montoStr;
-            document.getElementById('out-tipo-pago').innerText = tipoPagoVal;
-            document.getElementById('out-referencia').innerText = refVal;
-
-            // Mostrar el recibo antes de generar para que html2pdf lo pueda medir
-            const receipt = document.getElementById('receipt-section');
-            receipt.style.display = 'block';
-            
+            document.getElementById('receipt-section').style.display = 'block';
             document.getElementById('actions-section').style.display = 'flex';
-            
-            // Opcional: hacer un pequeño scroll hacia el recibo
-            receipt.scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('receipt-section').scrollIntoView({behavior: 'smooth'});
         }
 
         function descargarPDF() {
             const element = document.getElementById('receipt-section');
             const opt = {
-                margin:       12,
-                filename:     'Recibo_Conjunto_Mucubaji.pdf',
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                margin: 10,
+                filename: 'Recibo_Mucubaji.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 3 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
-
-            // Forzamos la descarga del PDF
-            html2pdf().set(opt).from(element).save().catch(err => {
-                console.error(err);
-                alert("Ocurrió un error al generar el PDF. Intente nuevamente.");
-            });
-        }
-
-        function descargarComoImagen() {
-            const element = document.getElementById('receipt-section');
-            const opt = {
-                margin:       5,
-                filename:     'Recibo_Conjunto_Mucubaji.jpg',
-                image:        { type: 'jpeg', quality: 1.0 },
-                html2canvas:  { scale: 2, useCORS: true },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-
-            html2pdf().set(opt).from(element).to('img').get('img').then((img) => {
-                let win = window.open();
-                win.document.write('<div style="text-align:center;"><img src="' + img.src + '" style="width:95%; max-width:650px; margin-top:20px;"/><br><p style="font-family:sans-serif;"><b>Mantén presionada la imagen para descargarla o compartirla.</b></p></div>');
-                win.document.title = "Recibo_Conjunto_Mucubaji";
-            }).catch(err => {
-                console.error(err);
-                alert("Ocurrió un error al generar la imagen. Intente de nuevo.");
-            });
+            html2pdf().set(opt).from(element).save();
         }
     </script>
 </body>
